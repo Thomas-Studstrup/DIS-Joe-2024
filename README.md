@@ -2,6 +2,11 @@ Digital Ocean password
 
 123456789CBS
 
+Serverens nuværende (28/11-24) IP-adresse:
+
+209.38.97.198
+
+
 # joe-server install
 
 git clone https://github.com/mwndigi/joe-server.git
