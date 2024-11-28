@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./static/styles/global.css">
+  <title>JOE and The Juice</title>
+</head>
+
+<body>
+  <ul>
+    <li><img src="./static/img/joeLogo.svg" alt="Logo"></li>
+    <li><a href="/" class="active">Home</a></li>
+    <li style="float:right"><a href="/">Culture</a></li>
+    <li style="float:right"><a href="/">Locations</a></li>
+    <li style="float:right"><a href="/">Menu</a></li>
+  </ul>
+  <div class="center">
+    <button onclick="getResponse()">Press me</button>
+    <p id="response"></p>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="./static/scripts/index.js"></script>
+
+</html>
