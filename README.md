@@ -1,3 +1,7 @@
+Digital Ocean password
+
+123456789CBS
+
 # joe-server install
 
 git clone https://github.com/mwndigi/joe-server.git
