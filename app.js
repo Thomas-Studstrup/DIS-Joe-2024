@@ -16,14 +16,16 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+// Angiv EJS som templating engine
+app.set('view engine', 'ejs');
+
+// Opret en route
+app.get('/', (req, res) => {
+    res.render('index', { title: 'Velkommen til EJS', message: 'Hej fra EJS!' });
 });
 
-app.get("/res", (req, res) => {
-  res.send("Response message from server");
-});
-
-app.listen(3000, () => {
-  console.log("Server listening on port 3000");
+// Start serveren
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Serveren kører på http://localhost:${PORT}`);
 });
