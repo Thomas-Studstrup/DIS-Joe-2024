@@ -19,6 +19,9 @@ app.use((req, res, next) => {
 // Angiv EJS som templating engine
 app.set('view engine', 'ejs');
 
+// Angiv den korrekte sti til views-mappen
+app.set('views', path.join(__dirname, 'views'));
+
 // Opret en route
 app.get('/', (req, res) => {
     res.render('index', { title: 'Velkommen til EJS', message: 'Hej fra EJS!' });
