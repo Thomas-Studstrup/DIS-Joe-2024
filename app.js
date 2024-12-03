@@ -19,8 +19,8 @@ app.use((req, res, next) => {
 // Angiv EJS som templating engine
 app.set('view engine', 'ejs');
 
-// Angiv den korrekte sti til views-mappen
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src', 'views')); // Ændr 'src' til den rigtige mappe, hvis nødvendigt
+
 
 // Opret en route
 app.get('/', (req, res) => {
