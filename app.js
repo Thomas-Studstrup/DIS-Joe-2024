@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-//hey
+const db = require('./db'); // Importér forbindelsen
 
 app.use(cors());
 app.use("/static", express.static("public"));
