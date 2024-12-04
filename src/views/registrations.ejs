@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Registrations</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('./partials/header') %>
+    
+    <div class="container">
+        <div class="content">
+            <h1>My Registrations</h1>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+            
+            <div class="registrations-list">
+                <% registrations.forEach(registration => { %>
+                    <div class="registration-card">
+                        <h2><%= registration.run_name %></h2>
+                        <p><strong>Location:</strong> <%= registration.location %></p>
+                        <p><strong>Date:</strong> <%= new Date(registration.date_time).toLocaleString() %></p>
+                        <p><strong>Status:</strong> <span class="status-<%= registration.status.toLowerCase() %>">
+                            <%= registration.status %>
+                        </span></p>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

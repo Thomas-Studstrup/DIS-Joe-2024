@@ -1,0 +1,444 @@
+/* Define the Color Scheme */
+html{
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  /* Primary Colors */
+  --primary-color: #F7C1D9; /* Pink */
+  --primary-dark: #C69AAE; /* Pink Dark */
+  
+  /* Neutral Colors */
+  --background-color: #ffffff; /* Background */
+  --text-color: #232323; /* Primary Text */
+  --light-text-color: #ffffff; /* Light Text */
+  --border-color: #b7b7b7; /* Grey Border */
+
+  /* Success, Warning, and Error */
+  --success-color: #28a745; /* Green */
+  --warning-color: #ffc107; /* Yellow */
+  --error-color: #dc3545; /* Red */
+
+  --s: 0.5rem;
+  --m: 1rem;
+  --l: 1.5rem;
+  --xl: 2rem;
+  --xxl: 3rem;
+}
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color); 
+  margin: 0;
+  padding: 0;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Containers */
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.content{
+  width: 100%;
+  max-width: 1200px;
+}
+
+header.container{
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Navigation */
+nav.content {
+  color: var(--text-color);
+  padding: var(--s) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  color: var(--primary-color);
+}
+
+nav a:hover {
+  color: var(--primary-dark);
+}
+
+/* Buttons */
+button {
+  background-color: var(--primary-color);
+  color: var(--light-text-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Footer */
+footer {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  text-align: center;
+
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+
+
+
+}
+
+/* Navigation Specific Styles */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--l);
+}
+
+.nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary-dark);
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 60px; /* adjust as needed */
+  width: auto;
+}
+
+.active {
+  color: var(--primary-dark);
+}
+
+
+
+/* Form Styles */
+.form-container {
+    padding: var(--xl);
+    margin-top: var(--xl);
+}
+
+.auth-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: var(--l);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: var(--m);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--s);
+    color: var(--text-color);
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--s);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: var(--m);
+}
+
+.auth-form button {
+    width: 100%;
+    padding: var(--m);
+    margin-top: var(--m);
+}
+
+.alert {
+    padding: var(--m);
+    margin-bottom: var(--m);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.alert-error {
+    background-color: var(--error-color);
+    color: var(--light-text-color);
+}
+
+.alert-success {
+    background-color: var(--success-color);
+    color: var(--light-text-color);
+}
+
+/* Add to your existing navigation styles */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--m);
+    margin-left: var(--xl);
+}
+
+.user-menu span {
+    color: var(--text-color);
+}
+
+.logout-btn {
+    padding: var(--s) var(--m);
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    border-radius: 4px;
+}
+
+.logout-btn:hover {
+    background-color: var(--primary-dark);
+    text-decoration: none;
+}
+
+/* Add to your existing CSS */
+.runs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--l);
+    padding: var(--l) 0;
+}
+
+.run-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--l);
+    background: white;
+}
+
+.run-card h2 {
+    color: var(--primary-dark);
+    margin-bottom: var(--m);
+}
+
+.registered-btn {
+    background-color: var(--success-color);
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.registration-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--l);
+    margin-bottom: var(--l);
+    background: white;
+}
+
+.status-pending {
+    color: var(--warning-color);
+}
+
+.status-accepted {
+    color: var(--success-color);
+}
+
+.status-rejected {
+    color: var(--error-color);
+}
+
+/* Admin Dashboard Styles */
+.admin-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--xl);
+    padding: var(--l) 0;
+}
+
+.admin-section {
+    background: white;
+    border-radius: 8px;
+    padding: var(--l);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-section h2 {
+    color: var(--primary-dark);
+    margin-bottom: var(--l);
+}
+
+.admin-actions {
+    margin-bottom: var(--l);
+}
+
+.admin-table {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: var(--m);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--background-color);
+    font-weight: bold;
+}
+
+.actions {
+    display: flex;
+    gap: var(--s);
+    align-items: center;
+}
+
+.btn-small {
+    padding: var(--xs) var(--s);
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+}
+
+.inline-form {
+    display: inline;
+}
+
+select {
+    padding: var(--xs) var(--s);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* Admin Form Styles */
+.admin-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--xl);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--xl);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--m);
+    margin-top: var(--xl);
+}
+
+.btn-secondary {
+    background-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--text-color);
+}
+
+/* Home page styles */
+.hero-section {
+    text-align: center;
+    padding: var(--xxl) 0;
+    background: var(--background-color);
+    border-radius: 8px;
+    margin-bottom: var(--xl);
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    margin: var(--l) 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: var(--m);
+    justify-content: center;
+    margin-top: var(--xl);
+}
+
+.featured-runs {
+    margin-top: var(--xxl);
+}
+
+.featured-runs h2 {
+    text-align: center;
+    margin-bottom: var(--xl);
+}

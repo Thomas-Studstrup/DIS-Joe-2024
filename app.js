@@ -1,34 +1,71 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const session = require('express-session');
 const app = express();
-const db = require('./db'); // Importér forbindelsen
+const db = require('./db');
+const bodyParser = require('body-parser');
+const authRoutes = require('./src/routes/authRoutes');
+const runRoutes = require('./src/routes/runRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
+const { requireAuth, requireAdmin, optionalAuth } = require('./src/middleware/authMiddleware');
+const Run = require('./src/models/Run');
 
 app.use(cors());
-app.use("/static", express.static("public"));
+app.use(express.static(path.join(__dirname, 'src', 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Session middleware
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
+
+// Make user data and current path available to all views
 app.use((req, res, next) => {
-    console.log("----- HTTP Request -----");
-    console.log(`Method: ${req.method}`); // HTTP Method
-    console.log(`URL: ${req.originalUrl}`); // Requested URL
-    console.log("Headers:", req.headers); // Request Headers
-    console.log(`IP: ${req.ip}`); // IP Address
-    console.log("------------------------");
+    res.locals.user = req.session.userId ? {
+        id: req.session.userId,
+        email: req.session.userEmail,
+        name: req.session.userName,
+        isAdmin: req.session.isAdmin
+    } : null;
+    res.locals.path = req.path;
     next();
 });
 
-// Angiv EJS som templating engine
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src', 'views')); 
 
-app.set('views', path.join(__dirname, 'src', 'views')); // Ændr 'src' til den rigtige mappe, hvis nødvendigt
-
-
-// Opret en route
-app.get('/', (req, res) => {
-    res.render('index', { title: 'Velkommen til EJS', message: 'Hej fra EJS!' });
+// Public home route (no auth required) - MUST be before other routes
+app.get('/', async (req, res) => {
+    try {
+        const upcomingRuns = await Run.getUpcomingRuns();
+        res.render('index', { 
+            upcomingRuns,
+            error: req.session.error,
+            success: req.session.success 
+        });
+        
+        // Clear flash messages
+        delete req.session.error;
+        delete req.session.success;
+    } catch (error) {
+        console.error(error);
+        res.render('index', { upcomingRuns: [] });
+    }
 });
 
-// Start serveren
+// Routes - after the home route
+app.use('/', authRoutes);
+app.use('/', runRoutes);
+app.use('/', adminRoutes);
+
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Serveren kører på http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });

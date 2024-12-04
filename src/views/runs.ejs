@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Runs</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('./partials/header') %>
+    
+    <div class="container">
+        <div class="content">
+            <h1>Available Runs</h1>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+            
+            <div class="runs-grid">
+                <% runs.forEach(run => { %>
+                    <div class="run-card">
+                        <h2><%= run.run_name %></h2>
+                        <p><strong>Location:</strong> <%= run.location %></p>
+                        <p><strong>Date:</strong> <%= new Date(run.date_time).toLocaleString() %></p>
+                        <% if (!locals.user) { %>
+                            <a href="/login" class="btn">Login to Register</a>
+                        <% } else if (run.isRegistered) { %>
+                            <button class="registered-btn" disabled>Registered</button>
+                        <% } else { %>
+                            <form action="/runs/<%= run.run_id %>/register" method="POST">
+                                <button type="submit">Register</button>
+                            </form>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

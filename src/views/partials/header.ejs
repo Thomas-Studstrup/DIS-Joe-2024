@@ -1,0 +1,28 @@
+<header class="container">
+    <nav class="content">
+        <a href="/" class="logo">
+            <img src="/img/joeLogo.svg" alt="Joe's Logo">
+        </a>
+
+        <div class="nav-links">
+            <% if (locals.user) { %>
+                <!-- Logged in navigation -->
+                <a href="/" class="<%= path === '/' ? 'active' : '' %>">Home</a>
+                <a href="/runs" class="<%= path === '/runs' ? 'active' : '' %>">Runs</a>
+                <a href="/registrations" class="<%= path === '/registrations' ? 'active' : '' %>">My Registrations</a>
+                <% if (locals.user.isAdmin) { %>
+                    <a href="/admin" class="<%= path === '/admin' ? 'active' : '' %>">Admin</a>
+                <% } %>
+                <div class="user-menu">
+                    <span>Welcome, <%= locals.user.name %></span>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </div>
+            <% } else { %>
+                <!-- Non-logged in navigation -->
+                <a href="/login" class="<%= path === '/login' ? 'active' : '' %>">Login</a>
+                <a href="/register" class="<%= path === '/register' ? 'active' : '' %>">Register</a>
+            <% } %>
+        </div>
+    </nav>
+</header>
+  

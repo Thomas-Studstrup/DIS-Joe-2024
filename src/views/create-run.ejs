@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Run</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('./partials/header') %>
+    
+    <div class="container">
+        <div class="content">
+            <div class="admin-header">
+                <h1>Create New Run</h1>
+                <a href="/admin" class="btn">Back to Dashboard</a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+
+            <form action="/admin/runs/create" method="POST" class="admin-form">
+                <div class="form-group">
+                    <label for="run_name">Run Name</label>
+                    <input type="text" id="run_name" name="run_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="date_time">Date and Time</label>
+                    <input type="datetime-local" id="date_time" name="date_time" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Create Run</button>
+                    <a href="/admin" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

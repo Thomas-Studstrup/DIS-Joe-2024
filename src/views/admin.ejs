@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('./partials/header') %>
+    
+    <div class="container">
+        <div class="content">
+            <h1>Admin Dashboard</h1>
+            
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+
+            <div class="admin-grid">
+                <!-- Runs Management -->
+                <div class="admin-section">
+                    <h2>Runs Management</h2>
+                    <div class="admin-actions">
+                        <a href="/admin/runs/create" class="btn">Create New Run</a>
+                    </div>
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Run Name</th>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Registrations</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% runs.forEach(run => { %>
+                                    <tr>
+                                        <td><%= run.run_name %></td>
+                                        <td><%= new Date(run.date_time).toLocaleString() %></td>
+                                        <td><%= run.location %></td>
+                                        <td><%= run.registration_count %></td>
+                                        <td class="actions">
+                                            <a href="/admin/runs/<%= run.run_id %>/edit" class="btn-small">Edit</a>
+                                            <form action="/admin/runs/<%= run.run_id %>/delete" method="POST" class="inline-form">
+                                                <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Registrations Management -->
+                <div class="admin-section">
+                    <h2>Recent Registrations</h2>
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Run</th>
+                                    <th>Registration Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% registrations.forEach(reg => { %>
+                                    <tr>
+                                        <td><%= reg.user_name %></td>
+                                        <td><%= reg.run_name %></td>
+                                        <td><%= new Date(reg.registration_date).toLocaleString() %></td>
+                                        <td><span class="status-<%= reg.status.toLowerCase() %>"><%= reg.status %></span></td>
+                                        <td class="actions">
+                                            <form action="/admin/registrations/<%= reg.registration_id %>/status" method="POST" class="inline-form">
+                                                <select name="status" onchange="this.form.submit()">
+                                                    <option value="PENDING" <%= reg.status === 'PENDING' ? 'selected' : '' %>>Pending</option>
+                                                    <option value="ACCEPTED" <%= reg.status === 'ACCEPTED' ? 'selected' : '' %>>Accept</option>
+                                                    <option value="REJECTED" <%= reg.status === 'REJECTED' ? 'selected' : '' %>>Reject</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Management -->
+                <div class="admin-section">
+                    <h2>User Management</h2>
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Admin</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% users.forEach(user => { %>
+                                    <tr>
+                                        <td><%= user.name %></td>
+                                        <td><%= user.email %></td>
+                                        <td>
+                                            <form action="/admin/users/<%= user.user_id %>/toggle-admin" method="POST" class="inline-form">
+                                                <input type="checkbox" 
+                                                       <%= user.is_admin ? 'checked' : '' %>
+                                                       onchange="this.form.submit()"
+                                                       <%= user.user_id === locals.user.id ? 'disabled' : '' %>>
+                                            </form>
+                                        </td>
+                                        <td class="actions">
+                                            <a href="/admin/users/<%= user.user_id %>" class="btn-small">View</a>
+                                            <% if (user.user_id !== locals.user.id) { %>
+                                                <form action="/admin/users/<%= user.user_id %>/delete" method="POST" class="inline-form">
+                                                    <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                                </form>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

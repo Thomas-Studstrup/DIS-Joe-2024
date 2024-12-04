@@ -1,11 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joe's Running Club</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h1><%= message %></h1>
+  <%- include('./partials/header') %>
+
+  <div class="container">
+    <div class="content">
+      <div class="hero-section">
+        <h1>Welcome to Joe's Running Club</h1>
+        <p class="hero-text">Join our community of runners and participate in exciting running events!</p>
+
+        <% if (!locals.user) { %>
+          <div class="cta-buttons">
+            <a href="/register" class="btn btn-primary">Join Now</a>
+            <a href="/login" class="btn btn-secondary">Login</a>
+          </div>
+        <% } else { %>
+          <div class="cta-buttons">
+            <a href="/runs" class="btn btn-primary">View Available Runs</a>
+            <a href="/registrations" class="btn btn-secondary">My Registrations</a>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="featured-runs">
+        <h2>Upcoming Runs</h2>
+        <div class="runs-grid">
+          <% if (typeof upcomingRuns !== 'undefined' && upcomingRuns.length > 0) { %>
+            <% upcomingRuns.forEach(run => { %>
+              <div class="run-card">
+                <h3><%= run.run_name %></h3>
+                <p><strong>Location:</strong> <%= run.location %></p>
+                <p><strong>Date:</strong> <%= new Date(run.date_time).toLocaleString() %></p>
+                <% if (!locals.user) { %>
+                  <a href="/login" class="btn">Login to Register</a>
+                <% } else { %>
+                  <a href="/runs/<%= run.run_id %>" class="btn">View Details</a>
+                <% } %>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p>No upcoming runs at the moment. Check back soon!</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
