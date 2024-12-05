@@ -80,10 +80,11 @@ class User {
     static async getUserRuns(userId) {
         try {
             const [results] = await db.promise().query(
-                `SELECT r.* 
-                FROM Runs r 
-                INNER JOIN Registrations reg ON r.run_id = reg.run_id 
-                WHERE reg.user_id = ?`,
+                `SELECT r.*, reg.status, reg.registered_at 
+                 FROM Runs r 
+                 INNER JOIN Registrations reg ON r.run_id = reg.run_id 
+                 WHERE reg.user_id = ?
+                 ORDER BY r.date_time ASC`,
                 [userId]
             );
             return results;

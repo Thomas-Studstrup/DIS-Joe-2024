@@ -67,6 +67,22 @@ class Run {
             throw new Error(`Error getting upcoming runs: ${error.message}`);
         }
     }
+
+    static async registerUser(userId, runId) {
+        try {
+            const [result] = await db.promise().query(
+                'INSERT INTO Registrations (user_id, run_id, status, registered_at) VALUES (?, ?, ?, NOW())',
+                [userId, runId, 'PENDING']
+            );
+            return result.insertId;
+        } catch (error) {
+            // Check if it's a duplicate registration
+            if (error.code === 'ER_DUP_ENTRY') {
+                throw new Error('You are already registered for this run');
+            }
+            throw new Error(`Error registering for run: ${error.message}`);
+        }
+    }
 }
 
 module.exports = Run; 

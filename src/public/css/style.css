@@ -442,3 +442,36 @@ select {
     text-align: center;
     margin-bottom: var(--xl);
 }
+
+.run-details {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--xl);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.run-info {
+    margin-top: var(--l);
+}
+
+.registration-form {
+    margin-top: var(--xl);
+    padding: var(--l);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.registration-prompt {
+    margin-top: var(--xl);
+    text-align: center;
+}
+
+.registration-status {
+    margin-top: var(--xl);
+    padding: var(--l);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}

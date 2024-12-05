@@ -1,5 +1,6 @@
 const Run = require('../models/Run');
 const User = require('../models/User');
+const EmailService = require('../utils/emailService');
 
 class runController {
     static async listRuns(req, res) {
@@ -72,8 +73,28 @@ class runController {
     static async registerForRun(req, res) {
         try {
             const runId = req.params.id;
+            const { email } = req.body;
+            
+            // Verify email matches user's email
+            if (email !== req.session.userEmail) {
+                req.session.error = 'Email does not match your account';
+                return res.redirect(`/runs/${runId}`);
+            }
+
+            // Get run details for email
+            const run = await Run.findById(runId);
+            if (!run) {
+                req.session.error = 'Run not found';
+                return res.redirect('/runs');
+            }
+
+            // Register user
             await Run.registerUser(req.session.userId, runId);
-            req.session.success = 'Successfully registered for the run';
+            
+            // Send confirmation email
+            await EmailService.sendRegistrationConfirmation(email, run);
+
+            req.session.success = 'Successfully registered for the run. Check your email for confirmation.';
             res.redirect('/registrations');
         } catch (error) {
             console.error(error);

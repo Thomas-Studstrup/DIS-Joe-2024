@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= run.run_name %> - Joe's Running Club</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="container">
+        <div class="content">
+            <div class="run-details">
+                <h1><%= run.run_name %></h1>
+                
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-error"><%= error %></div>
+                <% } %>
+                
+                <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="alert alert-success"><%= success %></div>
+                <% } %>
+
+                <div class="run-info">
+                    <p><strong>Location:</strong> <%= run.location %></p>
+                    <p><strong>Date:</strong> <%= new Date(run.date_time).toLocaleString() %></p>
+                    
+                    <% if (!locals.user) { %>
+                        <div class="registration-prompt">
+                            <p>Please login to register for this run.</p>
+                            <a href="/login" class="btn">Login</a>
+                        </div>
+                    <% } else if (registrationStatus) { %>
+                        <div class="registration-status">
+                            <h3>Your Registration Status</h3>
+                            <p class="status-<%= registrationStatus.toLowerCase() %>">
+                                <%= registrationStatus %>
+                            </p>
+                        </div>
+                    <% } else { %>
+                        <div class="registration-form">
+                            <h3>Register for this Run</h3>
+                            <form action="/runs/<%= run.run_id %>/register" method="POST">
+                                <div class="form-group">
+                                    <label for="email">Confirm your email for registration details:</label>
+                                    <input type="email" 
+                                           id="email" 
+                                           name="email" 
+                                           value="<%= locals.user.email %>" 
+                                           required>
+                                </div>
+                                <button type="submit" class="btn">Register Now</button>
+                            </form>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
