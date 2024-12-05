@@ -1,5 +1,5 @@
 const db = require('../../db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt') || require('bcryptjs');
 
 class User {
     static async findByEmail(email) {
