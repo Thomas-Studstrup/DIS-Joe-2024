@@ -22,14 +22,21 @@
             <% } %>
             
             <div class="registrations-list">
-                <% registrations.forEach(registration => { %>
+                <% registrations.forEach(reg => { %>
                     <div class="registration-card">
-                        <h2><%= registration.run_name %></h2>
-                        <p><strong>Location:</strong> <%= registration.location %></p>
-                        <p><strong>Date:</strong> <%= new Date(registration.date_time).toLocaleString() %></p>
-                        <p><strong>Status:</strong> <span class="status-<%= registration.status.toLowerCase() %>">
-                            <%= registration.status %>
-                        </span></p>
+                        <h2><%= reg.run_name %></h2>
+                        <p><strong>Location:</strong> <%= reg.location %></p>
+                        <p><strong>Date:</strong> <%= new Date(reg.date_time).toLocaleString() %></p>
+                        <p><strong>Registered:</strong> <%= new Date(reg.registered_at).toLocaleString() %></p>
+                        <p>
+                            <strong>Status:</strong>
+                            <span class="status-<%= reg.discount_status ? reg.discount_status.toLowerCase() : 'pending' %>">
+                                <%= reg.discount_status || 'PENDING' %>
+                            </span>
+                        </p>
+                        <% if (reg.discount_status === 'ACCEPTED' && reg.discount_code) { %>
+                            <p><strong>Discount Code:</strong> <%= reg.discount_code %></p>
+                        <% } %>
                     </div>
                 <% }); %>
             </div>

@@ -80,11 +80,24 @@ class User {
     static async getUserRuns(userId) {
         try {
             const [results] = await db.promise().query(
-                `SELECT r.*, reg.status, reg.registered_at 
-                 FROM Runs r 
-                 INNER JOIN Registrations reg ON r.run_id = reg.run_id 
-                 WHERE reg.user_id = ?
-                 ORDER BY r.date_time ASC`,
+                `SELECT 
+                    r.registration_id,
+                    r.registered_at,
+                    ru.run_name,
+                    ru.location,
+                    ru.date_time,
+                    d.code as discount_code,
+                    CASE 
+                        WHEN ud.status IS NULL THEN 'REGISTERED'
+                        ELSE ud.status 
+                    END as discount_status
+                 FROM Registrations r
+                 JOIN Runs ru ON r.run_id = ru.run_id
+                 LEFT JOIN Discounts d ON d.run_id = ru.run_id
+                 LEFT JOIN UserDiscounts ud ON ud.discount_id = d.discount_id 
+                    AND ud.user_id = r.user_id
+                 WHERE r.user_id = ?
+                 ORDER BY ru.date_time DESC`,
                 [userId]
             );
             return results;
@@ -108,10 +121,20 @@ class User {
     static async getRegistrationStatus(userId, runId) {
         try {
             const [results] = await db.promise().query(
-                'SELECT status FROM Registrations WHERE user_id = ? AND run_id = ?',
+                `SELECT 
+                    CASE 
+                        WHEN ud.status IS NULL THEN 'REGISTERED'
+                        ELSE ud.status 
+                    END as discount_status
+                 FROM Registrations r
+                 JOIN Runs ru ON r.run_id = ru.run_id
+                 LEFT JOIN Discounts d ON d.run_id = ru.run_id
+                 LEFT JOIN UserDiscounts ud ON ud.discount_id = d.discount_id 
+                    AND ud.user_id = r.user_id
+                 WHERE r.user_id = ? AND r.run_id = ?`,
                 [userId, runId]
             );
-            return results[0]?.status;
+            return results[0]?.discount_status || null;
         } catch (error) {
             throw new Error(`Error getting registration status: ${error.message}`);
         }

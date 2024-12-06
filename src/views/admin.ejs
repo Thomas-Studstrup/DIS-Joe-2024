@@ -47,8 +47,45 @@
                                         <td><%= run.location %></td>
                                         <td><%= run.registration_count %></td>
                                         <td class="actions">
-                                            <a href="/admin/runs/<%= run.run_id %>/edit" class="btn-small">Edit</a>
+                                            <button class="btn-small edit-run-btn" 
+                                                    data-run="<%= JSON.stringify(run) %>">
+                                                Edit
+                                            </button>
                                             <form action="/admin/runs/<%= run.run_id %>/delete" method="POST" class="inline-form">
+                                                <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure you want to delete this run? This will also delete all associated registrations.')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Discount Codes Management (Now a separate section) -->
+                <div class="admin-section">
+                    <h2>Discount Codes</h2>
+                    <div class="admin-actions">
+                        <button class="btn create-discount-btn">Create New Discount</button>
+                    </div>
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Run</th>
+                                    <th>Expires</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% discounts.forEach(discount => { %>
+                                    <tr>
+                                        <td><%= discount.code %></td>
+                                        <td><%= discount.run_name %></td>
+                                        <td><%= new Date(discount.expires_at).toLocaleString() %></td>
+                                        <td class="actions">
+                                            <form action="/admin/discounts/<%= discount.discount_id %>/delete" method="POST" class="inline-form">
                                                 <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
                                             </form>
                                         </td>
@@ -59,7 +96,7 @@
                     </div>
                 </div>
 
-                <!-- Registrations Management -->
+                <!-- Recent Registrations -->
                 <div class="admin-section">
                     <h2>Recent Registrations</h2>
                     <div class="admin-table">
@@ -69,7 +106,7 @@
                                     <th>User</th>
                                     <th>Run</th>
                                     <th>Registration Date</th>
-                                    <th>Status</th>
+                                    <th>Discount Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -79,54 +116,26 @@
                                         <td><%= reg.user_name %></td>
                                         <td><%= reg.run_name %></td>
                                         <td><%= new Date(reg.registration_date).toLocaleString() %></td>
-                                        <td><span class="status-<%= reg.status.toLowerCase() %>"><%= reg.status %></span></td>
-                                        <td class="actions">
-                                            <form action="/admin/registrations/<%= reg.registration_id %>/status" method="POST" class="inline-form">
-                                                <select name="status" onchange="this.form.submit()">
-                                                    <option value="PENDING" <%= reg.status === 'PENDING' ? 'selected' : '' %>>Pending</option>
-                                                    <option value="ACCEPTED" <%= reg.status === 'ACCEPTED' ? 'selected' : '' %>>Accept</option>
-                                                    <option value="REJECTED" <%= reg.status === 'REJECTED' ? 'selected' : '' %>>Reject</option>
-                                                </select>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Users Management -->
-                <div class="admin-section">
-                    <h2>User Management</h2>
-                    <div class="admin-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Admin</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% users.forEach(user => { %>
-                                    <tr>
-                                        <td><%= user.name %></td>
-                                        <td><%= user.email %></td>
                                         <td>
-                                            <form action="/admin/users/<%= user.user_id %>/toggle-admin" method="POST" class="inline-form">
-                                                <input type="checkbox" 
-                                                       <%= user.is_admin ? 'checked' : '' %>
-                                                       onchange="this.form.submit()"
-                                                       <%= user.user_id === locals.user.id ? 'disabled' : '' %>>
-                                            </form>
+                                            <% if (reg.discount_code) { %>
+                                                <span class="status-<%= reg.discount_status ? reg.discount_status.toLowerCase() : 'pending' %>">
+                                                    <%= reg.discount_status || 'Pending' %>
+                                                </span>
+                                            <% } else { %>
+                                                <span class="status-na">N/A</span>
+                                            <% } %>
                                         </td>
                                         <td class="actions">
-                                            <a href="/admin/users/<%= user.user_id %>" class="btn-small">View</a>
-                                            <% if (user.user_id !== locals.user.id) { %>
-                                                <form action="/admin/users/<%= user.user_id %>/delete" method="POST" class="inline-form">
-                                                    <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                            <% if (reg.discount_code) { %>
+                                                <form action="/admin/discounts/<%= reg.discount_id %>/status" method="POST" class="inline-form">
+                                                    <select name="status" onchange="this.form.submit()">
+                                                        <option value="" disabled selected>Change Status</option>
+                                                        <% ['PENDING', 'ACCEPTED', 'REJECTED'].forEach(status => { %>
+                                                            <% if (status !== reg.discount_status) { %>
+                                                                <option value="<%= status %>"><%= status === 'PENDING' ? 'Pending' : status === 'ACCEPTED' ? 'Accept' : 'Reject' %></option>
+                                                            <% } %>
+                                                        <% }); %>
+                                                    </select>
                                                 </form>
                                             <% } %>
                                         </td>
@@ -139,5 +148,67 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Run Modal -->
+    <div id="editRunModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Run</h2>
+            <form id="editRunForm" method="POST">
+                <div class="form-group">
+                    <label for="edit_run_name">Run Name</label>
+                    <input type="text" id="edit_run_name" name="run_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_location">Location</label>
+                    <input type="text" id="edit_location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_date_time">Date and Time</label>
+                    <input type="datetime-local" id="edit_date_time" name="date_time" required>
+                </div>
+                <div class="form-actions">
+                    
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Discount Modal -->
+    <div id="createDiscountModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Discount Code</h2>
+            <form id="createDiscountForm" method="POST" action="/admin/discounts/create">
+                <div class="form-group">
+                    <label for="discount_code">Discount Code</label>
+                    <input type="text" id="discount_code" name="code" required pattern="[A-Za-z0-9]+" minlength="4" maxlength="20">
+                    <small>Only letters and numbers, 4-20 characters</small>
+                </div>
+                <div class="form-group">
+                    <label for="run_id">Run</label>
+                    <select id="run_id" name="run_id" required>
+                        <option value="">Select a run</option>
+                        <% runs.forEach(run => { %>
+                            <option value="<%= run.run_id %>"><%= run.run_name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expires_at">Expires At</label>
+                    <input type="datetime-local" id="expires_at" name="expires_at" required>
+                </div>
+                <div class="form-actions">
+                    
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/scripts/admin.js"></script>
 </body>
 </html>

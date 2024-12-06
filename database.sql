@@ -32,9 +32,19 @@ CREATE TABLE Registrations (
 CREATE TABLE Discounts (
     discount_id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) UNIQUE NOT NULL,
-    user_id INT NOT NULL,
+    run_id INT NOT NULL,
     issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (run_id) REFERENCES Runs(run_id) ON DELETE CASCADE
 );
 
+-- Create UserDiscounts table
+CREATE TABLE UserDiscounts (
+    user_discount_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    discount_id INT NOT NULL,
+    status ENUM('Pending', 'Accepted', 'Rejected') DEFAULT 'Pending',
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (discount_id) REFERENCES Discounts(discount_id) ON DELETE CASCADE
+);

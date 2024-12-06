@@ -1,6 +1,6 @@
 const Run = require('../models/Run');
 const User = require('../models/User');
-const EmailService = require('../utils/emailService');
+const EmailService = require('../services/EmailService');
 
 class runController {
     static async listRuns(req, res) {

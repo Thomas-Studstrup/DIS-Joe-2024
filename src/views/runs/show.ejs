@@ -33,10 +33,21 @@
                         </div>
                     <% } else if (registrationStatus) { %>
                         <div class="registration-status">
-                            <h3>Your Registration Status</h3>
-                            <p class="status-<%= registrationStatus.toLowerCase() %>">
-                                <%= registrationStatus %>
+                            <p>
+                                <strong>Registration Status:</strong>
+                                <span class="status-<%= registrationStatus.toLowerCase() %>">
+                                    <%= registrationStatus %>
+                                </span>
                             </p>
+                            <% if (registrationStatus === 'REGISTERED') { %>
+                                <p>You are registered for this run. Please wait for admin approval.</p>
+                            <% } else if (registrationStatus === 'PENDING') { %>
+                                <p>Your registration is being reviewed by an admin.</p>
+                            <% } else if (registrationStatus === 'ACCEPTED') { %>
+                                <p>Your registration has been accepted! Check your email for the discount code.</p>
+                            <% } else if (registrationStatus === 'REJECTED') { %>
+                                <p>Unfortunately, your registration was not accepted for this run.</p>
+                            <% } %>
                         </div>
                     <% } else { %>
                         <div class="registration-form">

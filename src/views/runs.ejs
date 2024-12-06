@@ -27,15 +27,7 @@
                         <h2><%= run.run_name %></h2>
                         <p><strong>Location:</strong> <%= run.location %></p>
                         <p><strong>Date:</strong> <%= new Date(run.date_time).toLocaleString() %></p>
-                        <% if (!locals.user) { %>
-                            <a href="/login" class="btn">Login to Register</a>
-                        <% } else if (run.isRegistered) { %>
-                            <button class="registered-btn" disabled>Registered</button>
-                        <% } else { %>
-                            <form action="/runs/<%= run.run_id %>/register" method="POST">
-                                <button type="submit">Register</button>
-                            </form>
-                        <% } %>
+                        <a href="/runs/<%= run.run_id %>" class="btn">View Details</a>
                     </div>
                 <% }); %>
             </div>

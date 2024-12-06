@@ -7,7 +7,7 @@ html{
 :root {
   /* Primary Colors */
   --primary-color: #F7C1D9; /* Pink */
-  --primary-dark: #C69AAE; /* Pink Dark */
+  --primary-dark: #d786aa; /* Pink Dark */
   
   /* Neutral Colors */
   --background-color: #ffffff; /* Background */
@@ -104,20 +104,37 @@ nav a:hover {
 }
 
 /* Buttons */
-button {
+button, .btn, nav a.btn {
   background-color: var(--primary-color);
   color: var(--light-text-color);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 1rem;
 }
 
-button:hover {
+button:hover, .btn:hover, nav a.btn:hover {
   background-color: var(--primary-dark);
+  color: var(--light-text-color);
 }
 
-/* Footer */
+nav a.btn, a.btn, button.btn {
+  text-decoration: none;
+}
+
+.btn-secondary {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--text-color);
+    color: var(--light-text-color);
+    border: 1px solid var(--text-color);
+}
+    /* Footer */
 footer {
   background-color: var(--background-color);
   color: var(--text-color);
@@ -167,6 +184,8 @@ footer {
 .active {
   color: var(--primary-dark);
 }
+
+
 
 
 
@@ -247,18 +266,6 @@ footer {
     color: var(--text-color);
 }
 
-.logout-btn {
-    padding: var(--s) var(--m);
-    background-color: var(--primary-color);
-    color: var(--light-text-color);
-    border-radius: 4px;
-}
-
-.logout-btn:hover {
-    background-color: var(--primary-dark);
-    text-decoration: none;
-}
-
 /* Add to your existing CSS */
 .runs-grid {
     display: grid;
@@ -316,8 +323,8 @@ footer {
 .admin-section {
     background: white;
     border-radius: 8px;
+    border: 1px solid var(--border-color);
     padding: var(--l);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .admin-section h2 {
@@ -349,13 +356,8 @@ th {
     font-weight: bold;
 }
 
-.actions {
-    display: flex;
-    gap: var(--s);
-    align-items: center;
-}
 
-.btn-small {
+button .btn-small {
     padding: var(--xs) var(--s);
     border-radius: 4px;
     background-color: var(--primary-color);
@@ -364,7 +366,7 @@ th {
     font-size: 14px;
 }
 
-.btn-danger {
+.btn-small.btn-danger {
     background-color: var(--error-color);
 }
 
@@ -373,9 +375,41 @@ th {
 }
 
 select {
-    padding: var(--xs) var(--s);
+    padding: var(--s);
     border-radius: 4px;
     border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 0.875rem;
+    cursor: pointer;
+    min-width: 140px;
+}
+
+select:hover {
+    border-color: var(--primary-color);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(247, 193, 217, 0.2); /* Using primary color with opacity */
+}
+
+/* Style for disabled option */
+select option[disabled] {
+    color: var(--border-color);
+}
+
+/* Style for regular options */
+select option {
+    padding: var(--xs) var(--s);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+select option:hover {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
 }
 
 /* Admin Form Styles */
@@ -397,18 +431,9 @@ select {
 
 .form-actions {
     display: flex;
-    gap: var(--m);
+    justify-content: space-between;
     margin-top: var(--xl);
 }
-
-.btn-secondary {
-    background-color: var(--border-color);
-}
-
-.btn-secondary:hover {
-    background-color: var(--text-color);
-}
-
 /* Home page styles */
 .hero-section {
     text-align: center;
@@ -449,7 +474,7 @@ select {
     padding: var(--xl);
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
 }
 
 .run-info {
@@ -474,4 +499,74 @@ select {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background-color: #f8f9fa;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Add these to your existing status styles */
+.status-na {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.status-pending,
+.status-accepted,
+.status-rejected {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-accepted {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.status-rejected {
+    background-color: #dc3545;
+    color: #fff;
 }
