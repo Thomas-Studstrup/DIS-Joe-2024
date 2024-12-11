@@ -6,7 +6,7 @@ class runController {
     static async listRuns(req, res) {
         try {
             const runs = await Run.findAll();
-            const userRegistrations = await User.getUserRuns(req.session.userId);
+            const userRegistrations = await User.getUserRuns(req.user.id);
             
             // Mark runs that user is registered for
             const runsWithRegistration = runs.map(run => ({
@@ -14,37 +14,48 @@ class runController {
                 isRegistered: userRegistrations.some(reg => reg.run_id === run.run_id)
             }));
             
+            // Get flash messages
+            const error = req.cookies.error;
+            const success = req.cookies.success;
+            
+            // Clear flash messages before rendering
+            res.clearCookie('error');
+            res.clearCookie('success');
+
+            // Render the page
             res.render('runs', { 
                 runs: runsWithRegistration,
-                error: req.session.error,
-                success: req.session.success 
+                error,
+                success
             });
-            
-            // Clear flash messages
-            delete req.session.error;
-            delete req.session.success;
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error loading runs';
+            res.cookie('error', 'Error loading runs');
             res.redirect('/');
         }
     }
 
     static async listMyRegistrations(req, res) {
         try {
-            const registrations = await User.getUserRuns(req.session.userId);
+            const registrations = await User.getUserRuns(req.user.id);
+            
+            // Get flash messages
+            const error = req.cookies.error;
+            const success = req.cookies.success;
+            
+            // Clear flash messages before rendering
+            res.clearCookie('error');
+            res.clearCookie('success');
+
+            // Render the page
             res.render('registrations', { 
                 registrations,
-                error: req.session.error,
-                success: req.session.success 
+                error,
+                success
             });
-            
-            // Clear flash messages
-            delete req.session.error;
-            delete req.session.success;
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error loading your registrations';
+            res.cookie('error', 'Error loading your registrations');
             res.redirect('/');
         }
     }
@@ -53,19 +64,19 @@ class runController {
         try {
             const run = await Run.findById(req.params.id);
             if (!run) {
-                req.session.error = 'Run not found';
+                res.cookie('error', 'Run not found');
                 return res.redirect('/runs');
             }
 
             const registrationStatus = await User.getRegistrationStatus(
-                req.session.userId, 
+                req.user.id, 
                 run.run_id
             );
 
             res.render('runs/show', { run, registrationStatus });
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error loading run details';
+            res.cookie('error', 'Error loading run details');
             res.redirect('/runs');
         }
     }
@@ -76,29 +87,29 @@ class runController {
             const { email } = req.body;
             
             // Verify email matches user's email
-            if (email !== req.session.userEmail) {
-                req.session.error = 'Email does not match your account';
+            if (email !== req.user.email) {
+                res.cookie('error', 'Email does not match your account');
                 return res.redirect(`/runs/${runId}`);
             }
 
             // Get run details for email
             const run = await Run.findById(runId);
             if (!run) {
-                req.session.error = 'Run not found';
+                res.cookie('error', 'Run not found');
                 return res.redirect('/runs');
             }
 
             // Register user
-            await Run.registerUser(req.session.userId, runId);
+            await Run.registerUser(req.user.id, runId);
             
             // Send confirmation email
             await EmailService.sendRegistrationConfirmation(email, run);
 
-            req.session.success = 'Successfully registered for the run. Check your email for confirmation.';
+            res.cookie('success', 'Successfully registered for the run. Check your email for confirmation.');
             res.redirect('/registrations');
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error registering for run';
+            res.cookie('error', 'Error registering for run');
             res.redirect(`/runs/${req.params.id}`);
         }
     }

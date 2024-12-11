@@ -1,15 +1,16 @@
 const User = require('../models/User');
+const JWTUtil = require('../utils/jwt');
 
 class authController {
     static async showLogin(req, res) {
-        const error = req.session.error;
-        delete req.session.error;
+        const error = req.cookies.error;
+        res.clearCookie('error');
         res.render('login', { error });
     }
 
     static async showRegister(req, res) {
-        const error = req.session.error;
-        delete req.session.error;
+        const error = req.cookies.error;
+        res.clearCookie('error');
         res.render('register', { error });
     }
 
@@ -19,27 +20,31 @@ class authController {
             const user = await User.findByEmail(email);
             
             if (!user) {
-                req.session.error = 'Invalid email or password';
+                res.cookie('error', 'Invalid email or password');
                 return res.redirect('/login');
             }
             
             const isValidPassword = await User.verifyPassword(password, user.password);
             
             if (!isValidPassword) {
-                req.session.error = 'Invalid email or password';
+                res.cookie('error', 'Invalid email or password');
                 return res.redirect('/login');
             }
 
-            // Set user session with correct field names
-            req.session.userId = user.user_id;
-            req.session.userEmail = user.email;
-            req.session.userName = user.name;
-            req.session.isAdmin = user.is_admin;
+            // Generate JWT token
+            const token = JWTUtil.generateToken(user);
+            
+            // Set token in cookie
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            });
             
             res.redirect('/');
         } catch (error) {
             console.error(error);
-            req.session.error = 'An error occurred during login';
+            res.cookie('error', 'An error occurred during login');
             res.redirect('/login');
         }
     }
@@ -49,33 +54,29 @@ class authController {
             const { name, email, password, confirmPassword } = req.body;
             
             if (password !== confirmPassword) {
-                req.session.error = 'Passwords do not match';
+                res.cookie('error', 'Passwords do not match');
                 return res.redirect('/register');
             }
 
             const existingUser = await User.findByEmail(email);
             if (existingUser) {
-                req.session.error = 'Email already registered';
+                res.cookie('error', 'Email already registered');
                 return res.redirect('/register');
             }
 
-            await User.create({ name, email, password });
-            req.session.success = 'Registration successful! Please login.';
+            const user = await User.create({ name, email, password });
+            res.cookie('success', 'Registration successful! Please login.');
             res.redirect('/login');
         } catch (error) {
             console.error(error);
-            req.session.error = 'An error occurred during registration';
+            res.cookie('error', 'An error occurred during registration');
             res.redirect('/register');
         }
     }
 
     static async logout(req, res) {
-        req.session.destroy((err) => {
-            if (err) {
-                console.error('Error destroying session:', err);
-            }
-            res.redirect('/login');
-        });
+        res.clearCookie('token');
+        res.redirect('/login');
     }
 }
 

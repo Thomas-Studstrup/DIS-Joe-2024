@@ -1,19 +1,36 @@
+const JWTUtil = require('../utils/jwt');
+
 const requireAuth = (req, res, next) => {
-    if (!req.session.userId) {
-        req.session.error = 'Please login to access this page';
+    const token = req.cookies.token;
+    const user = JWTUtil.verifyToken(token);
+
+    if (!user) {
+        res.cookie('error', 'Please login to access this page');
         return res.redirect('/login');
     }
+    
+    req.user = user;
     next();
 };
 
 const requireAdmin = (req, res, next) => {
-    if (!req.session.isAdmin) {
+    const token = req.cookies.token;
+    const user = JWTUtil.verifyToken(token);
+
+    if (!user || !user.isAdmin) {
         return res.redirect('/');
     }
+    
+    req.user = user;
     next();
 };
 
 const optionalAuth = (req, res, next) => {
+    const token = req.cookies.token;
+    const user = JWTUtil.verifyToken(token);
+    if (user) {
+        req.user = user;
+    }
     next();
 };
 

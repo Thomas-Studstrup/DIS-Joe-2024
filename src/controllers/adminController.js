@@ -11,38 +11,48 @@ class adminController {
             const users = await User.findAll();
             const discounts = await Discount.findAll();
 
+            // Get flash messages
+            const error = req.cookies.error;
+            const success = req.cookies.success;
+            
+            // Clear flash messages before rendering
+            res.clearCookie('error');
+            res.clearCookie('success');
+
+            // Render the page
             res.render('admin', { 
                 runs, 
                 registrations, 
                 users,
                 discounts,
-                error: req.session.error,
-                success: req.session.success 
+                error,
+                success
             });
-
-            // Clear flash messages
-            delete req.session.error;
-            delete req.session.success;
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error loading admin dashboard';
+            res.cookie('error', 'Error loading admin dashboard');
             res.redirect('/');
         }
     }
 
     static async showCreateRun(req, res) {
         try {
-            res.render('create-run', {
-                error: req.session.error,
-                success: req.session.success
-            });
+            // Get flash messages
+            const error = req.cookies.error;
+            const success = req.cookies.success;
             
-            // Clear flash messages
-            delete req.session.error;
-            delete req.session.success;
+            // Clear flash messages before rendering
+            res.clearCookie('error');
+            res.clearCookie('success');
+
+            // Render the page
+            res.render('create-run', {
+                error,
+                success
+            });
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error loading create run form';
+            res.cookie('error', 'Error loading create run form');
             res.redirect('/admin');
         }
     }
@@ -53,7 +63,7 @@ class adminController {
             
             // Basic validation
             if (!run_name || !location || !date_time) {
-                req.session.error = 'All fields are required';
+                res.cookie('error', 'All fields are required');
                 return res.redirect('/admin/runs/create');
             }
 
@@ -64,11 +74,11 @@ class adminController {
                 date_time: new Date(date_time)
             });
 
-            req.session.success = 'Run created successfully';
+            res.cookie('success', 'Run created successfully');
             res.redirect('/admin');
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error creating run';
+            res.cookie('error', 'Error creating run');
             res.redirect('/admin/runs/create');
         }
     }
@@ -78,11 +88,11 @@ class adminController {
             const runId = req.params.id;
             await Run.delete(runId);
             
-            req.session.success = 'Run deleted successfully';
+            res.cookie('success', 'Run deleted successfully');
             res.redirect('/admin');
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error deleting run';
+            res.cookie('error', 'Error deleting run');
             res.redirect('/admin');
         }
     }
@@ -94,7 +104,7 @@ class adminController {
             
             // Basic validation
             if (!run_name || !location || !date_time) {
-                req.session.error = 'All fields are required';
+                res.cookie('error', 'All fields are required');
                 return res.redirect('/admin');
             }
 
@@ -104,11 +114,11 @@ class adminController {
                 date_time: new Date(date_time)
             });
 
-            req.session.success = 'Run updated successfully';
+            res.cookie('success', 'Run updated successfully');
             res.redirect('/admin');
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error updating run';
+            res.cookie('error', 'Error updating run');
             res.redirect('/admin');
         }
     }
@@ -119,7 +129,7 @@ class adminController {
             
             // Basic validation
             if (!code || !run_id || !expires_at) {
-                req.session.error = 'All fields are required';
+                res.cookie('error', 'All fields are required');
                 return res.redirect('/admin');
             }
 
@@ -129,11 +139,11 @@ class adminController {
                 expires_at: new Date(expires_at)
             });
 
-            req.session.success = 'Discount code created successfully';
+            res.cookie('success', 'Discount code created successfully');
             res.redirect('/admin');
         } catch (error) {
             console.error(error);
-            req.session.error = error.message;
+            res.cookie('error', error.message);
             res.redirect('/admin');
         }
     }
@@ -143,11 +153,11 @@ class adminController {
             const discountId = req.params.id;
             await Discount.delete(discountId);
             
-            req.session.success = 'Discount code deleted successfully';
+            res.cookie('success', 'Discount code deleted successfully');
             res.redirect('/admin');
         } catch (error) {
             console.error(error);
-            req.session.error = 'Error deleting discount code';
+            res.cookie('error', 'Error deleting discount code');
             res.redirect('/admin');
         }
     }
@@ -159,14 +169,14 @@ class adminController {
             
             await Discount.updateUserDiscountStatus(discountId, newStatus);
             
-            req.session.success = newStatus === 'ACCEPTED' 
+            res.cookie('success', newStatus === 'ACCEPTED' 
                 ? 'Discount accepted and email sent to user'
-                : `Discount status updated to ${newStatus}`;
+                : `Discount status updated to ${newStatus}`);
             
             res.redirect('/admin');
         } catch (error) {
             console.error('Error updating discount status:', error);
-            req.session.error = `Error updating discount status: ${error.message}`;
+            res.cookie('error', `Error updating discount status: ${error.message}`);
             res.redirect('/admin');
         }
     }
