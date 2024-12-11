@@ -1,7 +1,7 @@
 const JWTUtil = require('../utils/jwt');
 
 const requireAuth = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.JWT;
     const user = JWTUtil.verifyToken(token);
 
     if (!user) {
@@ -14,7 +14,7 @@ const requireAuth = (req, res, next) => {
 };
 
 const requireAdmin = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.JWT;
     const user = JWTUtil.verifyToken(token);
 
     if (!user || !user.isAdmin) {
@@ -26,7 +26,7 @@ const requireAdmin = (req, res, next) => {
 };
 
 const optionalAuth = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.JWT;
     const user = JWTUtil.verifyToken(token);
     if (user) {
         req.user = user;

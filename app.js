@@ -23,7 +23,7 @@ app.use(flashMiddleware);
 
 // Make user data and current path available to all views
 app.use((req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.JWT;
     const user = token ? JWTUtil.verifyToken(token) : null;
     
     res.locals.user = user;
