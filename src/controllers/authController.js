@@ -32,10 +32,10 @@ class authController {
             }
 
             // Generate JWT token
-            const token = JWTUtil.generateToken(user);
+            const JWT = JWTUtil.generateToken(user);
             
             // Set token in cookie
-            res.cookie('token', token, {
+            res.cookie('JWT', JWT, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 maxAge: 24 * 60 * 60 * 1000 // 24 hours
@@ -75,7 +75,7 @@ class authController {
     }
 
     static async logout(req, res) {
-        res.clearCookie('token');
+        res.clearCookie('JWT');
         res.redirect('/login');
     }
 }
