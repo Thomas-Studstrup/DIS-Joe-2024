@@ -45,7 +45,7 @@ class Discount {
 
     static async updateUserDiscountStatus(discountId, status) {
         try {
-            // Update query to include expires_at
+            // Update query to include user email and name
             const [userDiscount] = await db.promise().query(
                 `SELECT ud.*, d.code, d.run_id, d.expires_at, u.email, u.name, r.run_name
                  FROM UserDiscounts ud
@@ -61,7 +61,7 @@ class Discount {
             }
 
             // Update the status
-            const [result] = await db.promise().query(
+            await db.promise().query(
                 'UPDATE UserDiscounts SET status = ? WHERE discount_id = ?',
                 [status, discountId]
             );
@@ -69,8 +69,8 @@ class Discount {
             // If status is ACCEPTED, send email with expiration date
             if (status === 'ACCEPTED') {
                 await EmailService.sendRegistrationAcceptedEmail(
-                    userDiscount[0].email,
-                    userDiscount[0].name,
+                    userDiscount[0].email,  // Use the queried user's email
+                    userDiscount[0].name,   // Use the queried user's name
                     userDiscount[0].run_name,
                     userDiscount[0].code,
                     userDiscount[0].expires_at
