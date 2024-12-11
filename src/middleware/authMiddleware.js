@@ -1,8 +1,8 @@
 const JWTUtil = require('../utils/jwt');
 
 const requireAuth = (req, res, next) => {
-    const JWT = req.cookies.token;
-    const user = JWTUtil.verifyToken(JWT);
+    const token = req.cookies.token;
+    const user = JWTUtil.verifyToken(token);
 
     if (!user) {
         res.cookie('error', 'Please login to access this page');
@@ -14,8 +14,8 @@ const requireAuth = (req, res, next) => {
 };
 
 const requireAdmin = (req, res, next) => {
-    const JWT = req.cookies.token;
-    const user = JWTUtil.verifyToken(JWT);
+    const token = req.cookies.token;
+    const user = JWTUtil.verifyToken(token);
 
     if (!user || !user.isAdmin) {
         return res.redirect('/');
@@ -26,8 +26,8 @@ const requireAdmin = (req, res, next) => {
 };
 
 const optionalAuth = (req, res, next) => {
-    const JWT = req.cookies.token;
-    const user = JWTUtil.verifyToken(JWT);
+    const token = req.cookies.token;
+    const user = JWTUtil.verifyToken(token);
     if (user) {
         req.user = user;
     }

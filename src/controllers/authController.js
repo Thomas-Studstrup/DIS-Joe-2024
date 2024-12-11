@@ -32,10 +32,10 @@ class authController {
             }
 
             // Generate JWT token
-            const JWT = JWTUtil.generateToken(user);
+            const token = JWTUtil.generateToken(user);
             
             // Set token in cookie
-            res.cookie('JWT', JWT, {
+            res.cookie('JWT', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 maxAge: 24 * 60 * 60 * 1000 // 24 hours
