@@ -52,7 +52,7 @@ class Discount {
                  JOIN Discounts d ON ud.discount_id = d.discount_id
                  JOIN Users u ON ud.user_id = u.user_id
                  JOIN Runs r ON d.run_id = r.run_id
-                 WHERE d.discount_id = ?`,
+                 WHERE ud.user_discount_id = ?`,
                 [discountId]
             );
 
@@ -60,17 +60,17 @@ class Discount {
                 throw new Error('User discount not found');
             }
 
-            // Update the status
+            // Update the status for specific user_discount_id
             await db.promise().query(
-                'UPDATE UserDiscounts SET status = ? WHERE discount_id = ?',
+                'UPDATE UserDiscounts SET status = ? WHERE user_discount_id = ?',
                 [status, discountId]
             );
 
             // If status is ACCEPTED, send email with expiration date
             if (status === 'ACCEPTED') {
                 await EmailService.sendRegistrationAcceptedEmail(
-                    userDiscount[0].email,  // Use the queried user's email
-                    userDiscount[0].name,   // Use the queried user's name
+                    userDiscount[0].email,
+                    userDiscount[0].name,
                     userDiscount[0].run_name,
                     userDiscount[0].code,
                     userDiscount[0].expires_at

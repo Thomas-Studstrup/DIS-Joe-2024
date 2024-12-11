@@ -127,7 +127,7 @@
                                         </td>
                                         <td class="actions">
                                             <% if (reg.discount_code) { %>
-                                                <form action="/admin/discounts/<%= reg.discount_id %>/status" method="POST" class="inline-form">
+                                                <form action="/admin/discounts/<%= reg.user_discount_id %>/status" method="POST" class="inline-form">
                                                     <select name="status" onchange="this.form.submit()">
                                                         <option value="" disabled selected>Change Status</option>
                                                         <% ['PENDING', 'ACCEPTED', 'REJECTED'].forEach(status => { %>
