@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 class EmailService {
+    // Konfigurerer en transporter til at sende e-mails
     static transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
@@ -11,6 +12,7 @@ class EmailService {
         },
     });
 
+    // Sender en generel e-mail
     static async sendEmail(to, subject, html) {
         try {
             await this.transporter.sendMail({
@@ -25,6 +27,7 @@ class EmailService {
         }
     }
 
+    // Sender registreringsbekræftelse til brugeren
     static async sendRegistrationConfirmation(userEmail, runDetails) {
         try {
             const emailContent = `
@@ -50,7 +53,8 @@ class EmailService {
             throw new Error('Failed to send confirmation email');
         }
     }
-
+    
+    // Sender e-mail med rabatkode til brugeren
     static async sendRegistrationAcceptedEmail(userEmail, userName, runName, discountCode, expiresAt) {
         try {
             const expirationDate = new Date(expiresAt).toLocaleDateString('en-US', {

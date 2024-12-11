@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const JWTUtil = {
+    // Genererer en JWT-token med brugerdata
     generateToken(user) {
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined in environment variables');
@@ -18,6 +19,7 @@ const JWTUtil = {
         );
     },
 
+    // Verificerer en JWT-token og returnerer dekodet data eller null ved fejl
     verifyToken(token) {
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined in environment variables');

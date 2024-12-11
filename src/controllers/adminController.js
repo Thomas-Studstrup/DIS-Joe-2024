@@ -4,6 +4,8 @@ const Discount = require('../models/Discount');
 const EmailService = require('../services/EmailService');
 
 class adminController {
+
+    // Viser admin-dashboard med løb, registreringer, brugere og rabatkoder
     static async showDashboard(req, res) {
         try {
             const runs = await Run.findAll();
@@ -11,15 +13,12 @@ class adminController {
             const users = await User.findAll();
             const discounts = await Discount.findAll();
 
-            // Get flash messages
             const error = req.cookies.error;
             const success = req.cookies.success;
-            
-            // Clear flash messages before rendering
+        
             res.clearCookie('error');
             res.clearCookie('success');
 
-            // Render the page
             res.render('admin', { 
                 runs, 
                 registrations, 
@@ -35,17 +34,14 @@ class adminController {
         }
     }
 
+    // Viser formular til oprettelse af løb
     static async showCreateRun(req, res) {
         try {
-            // Get flash messages
             const error = req.cookies.error;
             const success = req.cookies.success;
-            
-            // Clear flash messages before rendering
             res.clearCookie('error');
             res.clearCookie('success');
 
-            // Render the page
             res.render('create-run', {
                 error,
                 success
@@ -57,17 +53,16 @@ class adminController {
         }
     }
 
+    // Opretter et nyt løb
     static async createRun(req, res) {
         try {
             const { run_name, location, date_time } = req.body;
             
-            // Basic validation
             if (!run_name || !location || !date_time) {
                 res.cookie('error', 'All fields are required');
                 return res.redirect('/admin/runs/create');
             }
 
-            // Create the run
             await Run.create({
                 run_name,
                 location,
@@ -83,6 +78,7 @@ class adminController {
         }
     }
 
+    // Sletter et løb
     static async deleteRun(req, res) {
         try {
             const runId = req.params.id;
@@ -97,12 +93,12 @@ class adminController {
         }
     }
 
+    // Rediger et løb
     static async editRun(req, res) {
         try {
             const runId = req.params.id;
             const { run_name, location, date_time } = req.body;
             
-            // Basic validation
             if (!run_name || !location || !date_time) {
                 res.cookie('error', 'All fields are required');
                 return res.redirect('/admin');
@@ -123,11 +119,11 @@ class adminController {
         }
     }
 
+    // Lav en rabatkode
     static async createDiscount(req, res) {
         try {
             const { code, run_id, expires_at } = req.body;
             
-            // Basic validation
             if (!code || !run_id || !expires_at) {
                 res.cookie('error', 'All fields are required');
                 return res.redirect('/admin');
@@ -148,6 +144,7 @@ class adminController {
         }
     }
 
+    // Sletter en rabatkode
     static async deleteDiscount(req, res) {
         try {
             const discountId = req.params.id;
@@ -162,6 +159,7 @@ class adminController {
         }
     }
 
+    // Opdaterer status for en rabatkode og sender e-mail, hvis den accepteres
     static async updateDiscountStatus(req, res) {
         try {
             const discountId = req.params.id;

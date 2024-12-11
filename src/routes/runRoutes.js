@@ -3,10 +3,10 @@ const router = express.Router();
 const runController = require('../controllers/runController');
 const { requireAuth } = require('../middleware/authMiddleware');
 
-// Public routes with optional auth
+// Oftenlig route 
 router.get('/runs', requireAuth, runController.listRuns);
 
-// Protected routes
+// Private routes
 router.get('/registrations', requireAuth, runController.listMyRegistrations);
 router.get('/runs/:id', requireAuth, runController.showRun);
 router.post('/runs/:id/register', requireAuth, runController.registerForRun);

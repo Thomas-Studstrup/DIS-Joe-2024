@@ -2,6 +2,7 @@ const db = require('../../db');
 const EmailService = require('../services/EmailService');
 
 class Discount {
+    // Henter alle rabatkoder, inklusiv tilknyttede løbsdata
     static async findAll() {
         try {
             const [results] = await db.promise().query(
@@ -16,6 +17,7 @@ class Discount {
         }
     }
 
+    // Opretter en ny rabatkode i databasen
     static async create(discountData) {
         try {
             const [result] = await db.promise().query(
@@ -31,6 +33,7 @@ class Discount {
         }
     }
 
+    // Sletter en rabatkode baseret på dens ID
     static async delete(discountId) {
         try {
             const [result] = await db.promise().query(
@@ -43,9 +46,10 @@ class Discount {
         }
     }
 
+    // Opdaterer status for en brugers rabatkode
     static async updateUserDiscountStatus(discountId, status) {
         try {
-            // Update query to include user email and name
+            // Hent data om brugerrabat, rabatkode og tilknyttet bruger og løb
             const [userDiscount] = await db.promise().query(
                 `SELECT ud.*, d.code, d.run_id, d.expires_at, u.email, u.name, r.run_name
                  FROM UserDiscounts ud
@@ -60,13 +64,13 @@ class Discount {
                 throw new Error('User discount not found');
             }
 
-            // Update the status for specific user_discount_id
+            // Opdater status for brugerrabat ud fra brugerID
             await db.promise().query(
                 'UPDATE UserDiscounts SET status = ? WHERE user_discount_id = ?',
                 [status, discountId]
             );
 
-            // If status is ACCEPTED, send email with expiration date
+            // Send en e-mail, hvis rabatten er accepteret
             if (status === 'ACCEPTED') {
                 await EmailService.sendRegistrationAcceptedEmail(
                     userDiscount[0].email,

@@ -1,6 +1,7 @@
 const db = require('../../db');
 
 class Run {
+    // Henter alle løb fra databasen, sorteret efter tidspunkt
     static async findAll() {
         try {
             const [results] = await db.promise().query(
@@ -12,6 +13,7 @@ class Run {
         }
     }
 
+    // Henter et specifikt løb baseret på ID
     static async findById(runId) {
         try {
             const [results] = await db.promise().query(
@@ -24,6 +26,7 @@ class Run {
         }
     }
 
+    // Opretter et nyt løb i databasen
     static async create(runData) {
         try {
             const [result] = await db.promise().query(
@@ -36,6 +39,7 @@ class Run {
         }
     }
 
+    // Henter de seneste 10 registreringer for løb
     static async getRecentRegistrations() {
         try {
             const [results] = await db.promise().query(
@@ -66,6 +70,7 @@ class Run {
         }
     }
 
+    // Henter kommende løb, begrænset til et givet antal (standard 3)
     static async getUpcomingRuns(limit = 3) {
         try {
             const [results] = await db.promise().query(
@@ -81,10 +86,11 @@ class Run {
         }
     }
 
+    // Registrerer en bruger til et løb
     static async registerUser(userId, runId) {
         const connection = await db.promise();
         try {
-            // Check for existing registration first
+            // Tjek om brugeren allerede er registreret
             const [existingReg] = await connection.query(
                 'SELECT registration_id FROM Registrations WHERE user_id = ? AND run_id = ?',
                 [userId, runId]
@@ -94,16 +100,16 @@ class Run {
                 throw new Error('You are already registered for this run');
             }
 
-            // Start transaction
+            // Starter transaktion
             await connection.beginTransaction();
 
-            // Create registration
+            // Opret registrering
             const [registrationResult] = await connection.query(
                 'INSERT INTO Registrations (user_id, run_id, registered_at) VALUES (?, ?, NOW())',
                 [userId, runId]
             );
 
-            // Get or create the run's discount
+            // Hent eller opret rabatkode for løbet
             const [existingDiscount] = await connection.query(
                 'SELECT discount_id FROM Discounts WHERE run_id = ? LIMIT 1',
                 [runId]
@@ -111,7 +117,7 @@ class Run {
 
             let discountId;
             if (existingDiscount.length === 0) {
-                // Create a new discount for the run if none exists
+                // Opret en ny rabatkode, hvis der ikke findes en
                 const [discountResult] = await connection.query(
                     'INSERT INTO Discounts (code, run_id, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 3 MONTH))',
                     [`RUN${runId}${Math.random().toString(36).substring(2, 6)}`.toUpperCase(), runId]
@@ -121,23 +127,22 @@ class Run {
                 discountId = existingDiscount[0].discount_id;
             }
 
-            // Create UserDiscount with PENDING status
+            // Opret rabatstatus for brugeren
             await connection.query(
                 'INSERT INTO UserDiscounts (user_id, discount_id, status) VALUES (?, ?, ?)',
                 [userId, discountId, 'PENDING']
             );
 
-            // Commit transaction
             await connection.commit();
             return registrationResult.insertId;
 
         } catch (error) {
-            // Rollback on error
             await connection.rollback();
             throw new Error(`Error registering for run: ${error.message}`);
         }
     }
 
+    // Sletter et løb baseret på ID
     static async delete(runId) {
         try {
             const [result] = await db.promise().query(
@@ -150,6 +155,7 @@ class Run {
         }
     }
 
+    // Opdaterer et løb med nye data
     static async update(runId, runData) {
         try {
             const [result] = await db.promise().query(
@@ -162,9 +168,10 @@ class Run {
         }
     }
 
+    // Accepterer en registrering og opdaterer status
     static async acceptRegistration(registrationId) {
         try {
-            // First update the status
+            // Opdater registreringsstatus
             const [updateResult] = await db.promise().query(
                 'UPDATE Registrations SET status = ? WHERE registration_id = ?',
                 ['ACCEPTED', registrationId]
@@ -174,7 +181,7 @@ class Run {
                 throw new Error('Registration not found');
             }
             
-            // Get complete registration details
+            // Hent detaljer om registreringen
             const [registrationDetails] = await db.promise().query(
                 `SELECT 
                     r.registration_id,

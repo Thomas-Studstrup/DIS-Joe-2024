@@ -1,7 +1,9 @@
 const db = require('../../db');
-const bcrypt = require('bcrypt') || require('bcryptjs');
+const bcrypt = require('bcrypt') || require('bcryptjs'); // Bruger bcrypt til hashing og sammenligning af adgangskoder
 
 class User {
+
+    // Finder en bruger baseret på e-mail
     static async findByEmail(email) {
         try {
             const [results] = await db.promise().query(
@@ -14,6 +16,7 @@ class User {
         }
     }
 
+    // Finder en bruger baseret på bruger-ID
     static async findById(userId) {
         try {
             const [results] = await db.promise().query(
@@ -26,9 +29,10 @@ class User {
         }
     }
 
+    // Opretter en ny bruger og gemmer den i databasen
     static async create(userData) {
         try {
-            const hashedPassword = await bcrypt.hash(userData.password, 10);
+            const hashedPassword = await bcrypt.hash(userData.password, 10); // Krypterer adgangskode
             
             const user = {
                 name: userData.name,
@@ -50,6 +54,7 @@ class User {
         }
     }
 
+    // Validerer brugerens adgangskode
     static async verifyPassword(plainPassword, hashedPassword) {
         try {
             return await bcrypt.compare(plainPassword, hashedPassword);
@@ -58,6 +63,7 @@ class User {
         }
     }
 
+    // Logger en bruger ind ved at validere e-mail og adgangskode
     static async login(email, password) {
         try {
             const user = await this.findByEmail(email);
@@ -70,13 +76,14 @@ class User {
                 throw new Error('Invalid credentials');
             }
 
-            const { password: _, ...userData } = user;
+            const { password: _, ...userData } = user;  // Fjerner adgangskoden fra det returnerede objekt
             return userData;
         } catch (error) {
             throw new Error(`Login failed: ${error.message}`);
         }
     }
 
+    // Henter alle løb, som en bruger er registreret til
     static async getUserRuns(userId) {
         try {
             const [results] = await db.promise().query(
@@ -106,6 +113,7 @@ class User {
         }
     }
 
+    // Henter alle rabatkoder for en bruger
     static async getUserDiscounts(userId) {
         try {
             const [results] = await db.promise().query(
@@ -118,6 +126,7 @@ class User {
         }
     }
 
+    // Henter registreringsstatus for en bruger for et specifikt løb
     static async getRegistrationStatus(userId, runId) {
         try {
             const [results] = await db.promise().query(
@@ -139,7 +148,8 @@ class User {
             throw new Error(`Error getting registration status: ${error.message}`);
         }
     }
-
+    
+    // Henter alle brugere fra databasen
     static async findAll() {
         try {
             const [results] = await db.promise().query(

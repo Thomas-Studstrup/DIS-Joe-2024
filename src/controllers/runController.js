@@ -3,26 +3,25 @@ const User = require('../models/User');
 const EmailService = require('../services/EmailService');
 
 class runController {
+
+    // Liste alle løb, og marker hvilke brugeren er registreret til
     static async listRuns(req, res) {
         try {
             const runs = await Run.findAll();
             const userRegistrations = await User.getUserRuns(req.user.id);
             
-            // Mark runs that user is registered for
+            // Tilføj registreringsstatus til hvert løb
             const runsWithRegistration = runs.map(run => ({
                 ...run,
                 isRegistered: userRegistrations.some(reg => reg.run_id === run.run_id)
             }));
             
-            // Get flash messages
+            // Hent og ryd flash-beskeder
             const error = req.cookies.error;
             const success = req.cookies.success;
-            
-            // Clear flash messages before rendering
             res.clearCookie('error');
             res.clearCookie('success');
 
-            // Render the page
             res.render('runs', { 
                 runs: runsWithRegistration,
                 error,
@@ -35,19 +34,16 @@ class runController {
         }
     }
 
+    // Liste brugerens egne registreringer
     static async listMyRegistrations(req, res) {
         try {
             const registrations = await User.getUserRuns(req.user.id);
             
-            // Get flash messages
             const error = req.cookies.error;
-            const success = req.cookies.success;
-            
-            // Clear flash messages before rendering
+            const success = req.cookies.success;            
             res.clearCookie('error');
             res.clearCookie('success');
 
-            // Render the page
             res.render('registrations', { 
                 registrations,
                 error,
@@ -60,6 +56,7 @@ class runController {
         }
     }
 
+    // Vis detaljer for et specifikt løb
     static async showRun(req, res) {
         try {
             const run = await Run.findById(req.params.id);
@@ -81,28 +78,29 @@ class runController {
         }
     }
 
+    // Registrer brugeren til et løb
     static async registerForRun(req, res) {
         try {
             const runId = req.params.id;
             const { email } = req.body;
             
-            // Verify email matches user's email
+            // Tjek at e-mail matcher brugerens e-mail
             if (email !== req.user.email) {
                 res.cookie('error', 'Email does not match your account');
                 return res.redirect(`/runs/${runId}`);
             }
 
-            // Get run details for email
+            // Hent løbsdetaljer
             const run = await Run.findById(runId);
             if (!run) {
                 res.cookie('error', 'Run not found');
                 return res.redirect('/runs');
             }
 
-            // Register user
+            // Registrer brugeren til løbet
             await Run.registerUser(req.user.id, runId);
             
-            // Send confirmation email
+            // Send bekræftelsesmail
             await EmailService.sendRegistrationConfirmation(email, run);
 
             res.cookie('success', 'Successfully registered for the run. Check your email for confirmation.');

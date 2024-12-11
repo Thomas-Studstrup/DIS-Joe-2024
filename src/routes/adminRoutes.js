@@ -3,7 +3,7 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 
-// Apply both auth and admin middleware to all admin routes
+// Bruger både auth and admin middleware til alle admin routes
 router.use(requireAuth, requireAdmin);
 
 router.get('/admin', adminController.showDashboard);
