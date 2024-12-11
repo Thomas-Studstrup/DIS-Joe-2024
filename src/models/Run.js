@@ -49,7 +49,8 @@ class Run {
                     ru.run_id,
                     d.code as discount_code,
                     d.discount_id,
-                    ud.status as discount_status
+                    ud.status as discount_status,
+                    ud.user_discount_id
                  FROM Registrations r
                  JOIN Users u ON r.user_id = u.user_id
                  JOIN Runs ru ON r.run_id = ru.run_id
