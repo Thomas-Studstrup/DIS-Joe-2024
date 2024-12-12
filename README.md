@@ -38,7 +38,7 @@ npm install
 
 Omdøb `.env.exapmle` til`.env` fil i roden af projektet og indsæt variablerne:
 
-# Database konfiguration
+#### Database konfiguration
 
 DB_HOST=din-host
 DB_USER=din-bruger
@@ -46,14 +46,14 @@ DB_PASSWORD=dit-password
 DB_NAME=din-database
 DB_PORT=3306
 
-# Email konfiguration (Gmail)
+#### Email konfiguration (Gmail)
 
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=465
 EMAIL_USER=din-email@gmail.com
 EMAIL_PASSWORD=din-app-password
 
-# JWT konfiguration
+#### JWT konfiguration
 
 JWT_SECRET=din-hemmelige-nøgle
 
@@ -67,7 +67,7 @@ npm start
 
 ---
 
-## Gmail Opsætning
+### Gmail Opsætning
 
 For at bruge Gmail til at sende emails:
 
@@ -76,7 +76,7 @@ For at bruge Gmail til at sende emails:
 
 ---
 
-## Database Struktur
+### Database Struktur
 
 - **Users**: Brugerdata og autentificering
 - **Runs**: Information om løb
