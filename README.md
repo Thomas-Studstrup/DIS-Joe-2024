@@ -1,135 +1,172 @@
-Digital Ocean password
+# Joe's Running Club 🏃‍♂️
 
-123456789CBS
+## Om Projektet
 
-Serverens nuværende (28/11-24) IP-adresse:
+Joe's Running Club er en netværksapplikation og platform, der understøtter håndtering af løb i samarbejde med løbeklubber. Platformen muliggør administration af rabatkoder, hvor medlemmer kan tilmelde sig forskellige løb, og administratorer kan sende Joe & The Juice rabatkoder til de fremmødte løbere.
 
-209.38.97.198
+### Funktioner
 
+- 👤 **Brugerregistrering og login**
+- 🏃 **Tilmelding til løb**
+- 📧 **Emailbekræftelser via Gmail**
+- 💰 **Rabatkoder til løb via Gmail**
+- 👨‍💼 **Admin dashboard til:**
+  - Håndtering af løb
+  - Rabatkodeadministration
+  - Tilmeldingsoversigt
 
-# joe-server install
+---
 
-git clone https://github.com/mwndigi/joe-server.git
+## Installation
 
-cd joe-server
+### Forudsætninger
+
+- **Node.js**
+- **MySQL database**
+- **Gmail-konto** til emails
+
+### Trin 1: Kloning af repository
+
+git clone [repository-url]
+cd [projekt-mappe]
+
+### Trin 2: Installation af dependencies
 
 npm install
 
-node app.js
+### Trin 3: Opsætning af .env fil
 
-## Node.js install
+Omdøb `.env.exapmle` til`.env` fil i roden af projektet og indsæt variablerne:
 
-[Link til dokumentation](https://github.com/nodesource/distributions?tab=readme-ov-file#using-ubuntu-nodejs-18)
+# Database konfiguration
 
-sudo apt-get install -y curl
+DB_HOST=din-host
+DB_USER=din-bruger
+DB_PASSWORD=dit-password
+DB_NAME=din-database
+DB_PORT=3306
 
-curl -fsSL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+# Email konfiguration (Gmail)
 
-sudo -E bash nodesource_setup.sh
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=465
+EMAIL_USER=din-email@gmail.com
+EMAIL_PASSWORD=din-app-password
 
-sudo apt-get install -y nodejs
+# JWT konfiguration
 
-node -v
+JWT_SECRET=din-hemmelige-nøgle
 
-## pm2 install
+### Trin 4: Databaseopsætning
 
-[Link til dokumentation](https://pm2.keymetrics.io/docs/usage/quick-start/)
+Kør SQL-kommandoerne som findes i `database.sql` for at oprette de nødvendige tabeller på din SQL-database.
 
-sudo npm install pm2@latest -g
+### Trin 5: Start serveren
 
-pm2 start app.js
+npm start
 
-pm2 startup systemd
+---
 
-sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /home/root
+## Gmail Opsætning
 
-pm2 save
+For at bruge Gmail til at sende emails:
 
-sudo systemctl start pm2-root
+1. Generér en **App-adgangskode**.
+2. Brug denne adgangskode i `.env`-filen.
 
-systemctl status pm2-root
+---
 
-## pm2 kommandoer
+## Database Struktur
 
-[Link til dokumentation](https://pm2.keymetrics.io/docs/usage/process-management/)
+- **Users**: Brugerdata og autentificering
+- **Runs**: Information om løb
+- **Registrations**: Løbstilmeldinger
+- **Discounts**: Rabatkoder
+- **UserDiscounts**: Rabatkoder til brugere (many-to-many)
 
-pm2 list
+---
 
-pm2 start node_file.js
+## API Endpoints
 
-pm2 stop app_name_or_id
+### Offentlig Route
 
-pm2 restart app_name_or_id
+- **GET `/`**  
+  Kræver ikke autentifikation. Viser et udkast af de oprettede løb.
 
-pm2 delete app_name_or_id
+### Private Routes
 
-pm2 info app_name
+- **GET `/registrations`**  
+  Kræver autentifikation. Returnerer en liste over brugerens egne tilmeldinger.
+- **GET `/runs`**  
+  Kræver autentifikation. Returnerer en liste over alle løb.
+- **GET `/runs/:id`**  
+  Kræver autentifikation. Returnerer detaljer om et specifikt løb baseret på dets ID.
+- **POST `/runs/:id/register`**  
+  Kræver autentifikation. Tilmeld en bruger til et specifikt løb baseret på dets ID.
 
-pm2 save
+### Login Routes
 
-## Nginx install
+- **GET `/login`**  
+  Viser login-siden.
+- **POST `/login`**  
+  Håndterer login af en bruger.
 
-[Link til dokumentation](https://nginx.org/en/docs/)
+### Register Routes
 
-sudo apt update 
+- **GET `/register`**  
+  Viser registreringssiden.
+- **POST `/register`**  
+  Opretter en ny bruger.
 
-sudo apt install nginx
+### Logout Route
 
-sudo nginx -v
+- **GET `/logout`**  
+  Logger brugeren ud af systemet.
 
-systemctl status nginx
+### Admin Routes
 
-## Nginx konfiguration
+- **GET `/admin`**  
+  Viser administrator-dashboardet.
+- **GET `/admin/runs/create`**  
+  Viser en side til at oprette nye løb.
+- **POST `/admin/runs/create`**  
+  Opretter et nyt løb.
+- **POST `/admin/runs/:id/delete`**  
+  Sletter et specifikt løb baseret på dets ID.
+- **POST `/admin/runs/:id/edit`**  
+  Redigerer et specifikt løb baseret på dets ID.
+- **POST `/admin/discounts/create`**  
+  Opretter en ny rabatkode.
+- **POST `/admin/discounts/:id/delete`**  
+  Sletter en specifik rabatkode baseret på dens ID.
+- **POST `/admin/discounts/:id/status`**  
+  Opdaterer status for en specifik rabatkode baseret på dens ID.
 
-sudo ufw app list
+### Bemærk
 
-sudo ufw allow 'Nginx HTTP'
+- Alle private og admin-ruter kræver autentificering af brugeren.
+- Administratorruter kræver yderligere autorisation for adgang.
 
-ufw allow OpenSSH
+---
 
-sudo ufw enable
+## Teknologier
 
-sudo ufw status
+- **Node.js** som runtime environment
+- **Express.js** som web framework
+- **MySQL** som database system
+- **mysql12** som MySQL driver/client
+- **EJS templates** (Embedded JavaScript) som template engine
+- **Nodemailer** til email funktionalitet
+- **Bcrypt** til password hashing
+- **JWT** til authentication/session håndtering
+- **cookie-parser** til cookie håndtering
+- **body-parser** til request parsing
 
-sudo nano /etc/nginx/sites-available/default
+---
 
-```
-server { 
-... 
-	location / { 
-		proxy_pass http://localhost:3000; 
-		proxy_http_version 1.1; 
-		proxy_set_header Upgrade $http_upgrade; 
-		proxy_set_header Connection 'upgrade'; 
-		proxy_set_header Host $host; 
-		proxy_cache_bypass $http_upgrade; 
-	} 
-... 
-}
-```
+## Udviklere
 
-Gem ændringerne i konfigurationen med CTRL+X og Y for Yes og Enter.
-
-sudo nginx -t
-
-sudo systemctl restart nginx
-
-## Nginx kommandoer
-
-sudo systemctl start nginx
-
-sudo systemctl stop nginx
-
-sudo systemctl restart nginx
-
-sudo systemctl reload nginx
-
-sudo systemctl disable nginx
-
-sudo systemctl enable nginx
-
-## Linux kommandoer
-
-[Link til oversigt](https://www.geeksforgeeks.org/linux-commands-cheat-sheet/)
-
-
+- **Malou Lüthcke**
+- **Josephine Holst-Christensen**
+- **Thomas Studstrup**
+- **Mads Pedersen**
