@@ -1,15 +1,15 @@
-# Joe's Running Club 🏃‍♂️
+# Joe's Running Club (JoeXSparta)🏃‍♂️
 
 ## Om Projektet
 
-Joe's Running Club er en netværksapplikation og platform, der understøtter håndtering af løb i samarbejde med løbeklubber. Platformen muliggør administration af rabatkoder, hvor medlemmer kan tilmelde sig forskellige løb, og administratorer kan sende Joe & The Juice rabatkoder til de fremmødte løbere.
+Joe's Running Club (JoeXSparta) er en netværksapplikation og platform, der understøtter håndtering af løb i samarbejde med løbeklubber. Platformen muliggør administration af rabatkoder, hvor medlemmer kan tilmelde sig forskellige løb, og administratorer kan sende Joe & The Juice rabatkoder til de fremmødte løbere.
 
 ### Funktioner
 
 - 👤 **Brugerregistrering og login**
 - 🏃 **Tilmelding til løb**
 - 📧 **Emailbekræftelser via Gmail**
-- 💰 **Rabatkoder til løb via Gmail**
+- 💰 **Rabatkoder til Joe via Gmail**
 - 👨‍💼 **Admin dashboard til:**
   - Håndtering af løb
   - Rabatkodeadministration
@@ -40,22 +40,22 @@ Omdøb `.env.exapmle` til`.env` fil i roden af projektet og indsæt variablerne:
 
 #### Database konfiguration
 
-DB_HOST=din-host
-DB_USER=din-bruger
-DB_PASSWORD=dit-password
-DB_NAME=din-database
-DB_PORT=3306
+- DB_HOST=din-host
+- DB_USER=din-bruger
+- DB_PASSWORD=dit-password
+- DB_NAME=din-database
+- DB_PORT=3306
 
 #### Email konfiguration (Gmail)
 
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=465
-EMAIL_USER=din-email@gmail.com
-EMAIL_PASSWORD=din-app-password
+- EMAIL_HOST=smtp.gmail.com
+- EMAIL_PORT=465
+- EMAIL_USER=din-email@gmail.com
+- EMAIL_PASSWORD=din-app-password
 
 #### JWT konfiguration
 
-JWT_SECRET=din-hemmelige-nøgle
+- JWT_SECRET=din-hemmelige-nøgle
 
 ### Trin 4: Databaseopsætning
 
