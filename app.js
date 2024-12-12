@@ -13,18 +13,13 @@ const authRoutes = require('./src/routes/authRoutes');
 const runRoutes = require('./src/routes/runRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 
-// Tilføjer ruter til applikationen
-app.use('/', authRoutes);
-app.use('/', runRoutes);
-app.use('/', adminRoutes);
-
 // Middleware
 const { requireAuth, requireAdmin, optionalAuth } = require('./src/middleware/authMiddleware');
-const flashMiddleware = require('./src/middleware/flashMiddleware');
 
 // JWT-værktøj og model
 const JWTUtil = require('./src/utils/jwt');
 const Run = require('./src/models/Run');
+const flashMiddleware = require('./src/middleware/flashMiddleware');
 
 // Aktiverer middleware
 app.use(cors());
@@ -73,6 +68,11 @@ app.get('/', async (req, res) => {
         });
     }
 });
+
+// Tilføjer ruter til applikationen
+app.use('/', authRoutes);
+app.use('/', runRoutes);
+app.use('/', adminRoutes);
 
 
 // Start serveren
