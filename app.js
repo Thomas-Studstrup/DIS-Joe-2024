@@ -16,11 +16,6 @@ const adminRoutes = require('./src/routes/adminRoutes');
 // Middleware
 const { requireAuth, requireAdmin, optionalAuth } = require('./src/middleware/authMiddleware');
 
-app.use((req, res, next) => {
-    console.log(`Request handled by: ${process.env.SERVER_NAME}`);
-    next();
-});
-
 // JWT-værktøj og model
 const JWTUtil = require('./src/utils/jwt');
 const Run = require('./src/models/Run');
