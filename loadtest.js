@@ -9,7 +9,7 @@ import('loadtest').then((module) => {
     ];
   
     const options = {
-      maxRequests: 1000,
+      maxRequests: 10000,
       concurrency: 50,
       method: 'GET',
       contentType: 'application/json',
