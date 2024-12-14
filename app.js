@@ -79,7 +79,6 @@ app.use('/', authRoutes);
 app.use('/', runRoutes);
 app.use('/', adminRoutes);
 
-// Make sure the server listens on the specified port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Running on port ${PORT}`);
